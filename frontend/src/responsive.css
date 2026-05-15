@@ -1,0 +1,69 @@
+/* ─────────────────────────────────────────────────────────
+   Responsive overrides — tablet & mobile
+   Base styles live in inline S objects inside each component.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Tablet  641px – 1024px ──────────────────────────────── */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .app-header  { padding: 1.8rem 1.8rem 1rem !important; }
+  .cal-wrap    { padding: .7rem 1.6rem 2rem !important; }
+  .months-grid { grid-template-columns: repeat(3,1fr) !important; }
+  .ms-body     { padding: 1.2rem 1.4rem 3rem !important; }
+  .ms-stat-grid { grid-template-columns: repeat(2,1fr) !important; }
+}
+
+/* ── Mobile  ≤ 640px ─────────────────────────────────────── */
+@media (max-width: 640px) {
+
+  /* Header: stack brand + search vertically */
+  .app-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 1.2rem 1rem .7rem !important;
+    gap: .75rem !important;
+  }
+
+  /* Search bar stretches full width */
+  .search-wrap  { width: 100% !important; align-items: stretch !important; }
+  .search-form  { width: 100% !important; }
+  .search-input { flex: 1 !important; width: auto !important; min-width: 0 !important; }
+  .search-btn   { white-space: nowrap !important; flex-shrink: 0 !important; }
+
+  /* Calendar grid */
+  .cal-wrap    { padding: .5rem .85rem 1.5rem !important; }
+  .months-grid { grid-template-columns: repeat(2,1fr) !important; gap: .55rem !important; }
+
+  /* Countdown */
+  .cd-hero { padding: 0 1rem .7rem !important; }
+  .cd-num  { font-size: 1.6rem !important; }
+  .cd-unit { font-size: .58rem !important; }
+  .cd-sep  { font-size: 1.1rem !important; }
+  .cd-nn   { display: none !important; }   /* hide "then …" on tiny screens */
+
+  /* MonthSheet bottom sheet */
+  .ms-body      { padding: .9rem .85rem 2.5rem !important; max-height: 96vh !important; }
+  .ms-header    { gap: .45rem !important; margin-bottom: .75rem !important; padding-right: 2.2rem !important; }
+  .ms-title     { font-size: 1.7rem !important; }
+  .ms-stat-grid { grid-template-columns: repeat(2,1fr) !important; gap: .5rem !important; }
+  .ms-callout-row { grid-template-columns: 1fr !important; gap: .45rem !important; }
+  .ms-full-cal  { gap: 3px !important; }
+
+  /* Shrink day cells a little so 7-col calendar fits narrow screens */
+  .ms-fd-icon   { font-size: .9rem !important; }
+  .ms-fd-num    { font-size: .68rem !important; }
+  .ms-fd-precip { display: none !important; } /* hide mm label — too tight */
+
+  /* DayOverlay card */
+  .do-card  { padding: 1.4rem 1.1rem !important; border-radius: 18px !important; width: 96% !important; }
+  .do-stats { grid-template-columns: repeat(2,1fr) !important; gap: .45rem !important; }
+  .do-icon  { font-size: 3rem !important; margin-bottom: .2rem !important; }
+  .do-date  { font-size: 1.9rem !important; }
+  .do-msg   { font-size: 1.1rem !important; }
+}
+
+/* ── Very small phones  ≤ 380px ─────────────────────────── */
+@media (max-width: 380px) {
+  .months-grid  { grid-template-columns: repeat(2,1fr) !important; gap: .45rem !important; }
+  .cd-num       { font-size: 1.35rem !important; }
+  .ms-body      { padding: .75rem .7rem 2.5rem !important; }
+}

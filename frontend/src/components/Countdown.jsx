@@ -20,7 +20,7 @@ export default function Countdown({ targetDate, nextRain, followingRain }) {
   if (!nextRain) return null;
 
   return (
-    <div style={S.hero}>
+    <div style={S.hero} className="cd-hero">
       <div style={S.lbl}>☁ next rain event</div>
       <div style={S.date}>
         {nextRain.dt.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -31,7 +31,7 @@ export default function Countdown({ targetDate, nextRain, followingRain }) {
         <Sep /><Unit num={pad(m)} lbl="min" />
         <Sep /><Unit num={pad(s)} lbl="sec" />
         {followingRain && (
-          <div style={S.nn}>
+          <div style={S.nn} className="cd-nn">
             <div style={S.nnLabel}>then</div>
             <div style={S.nnDate}>
               {followingRain.dt.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
@@ -45,15 +45,15 @@ export default function Countdown({ targetDate, nextRain, followingRain }) {
 
 function Unit({ num, lbl }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 50 }}>
-      <span style={S.num}>{num}</span>
-      <span style={S.unitLbl}>{lbl}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 44 }}>
+      <span style={S.num} className="cd-num">{num}</span>
+      <span style={S.unitLbl} className="cd-unit">{lbl}</span>
     </div>
   );
 }
 
 function Sep() {
-  return <span style={S.sep}>:</span>;
+  return <span style={S.sep} className="cd-sep">:</span>;
 }
 
 const S = {

@@ -50,15 +50,15 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick, onM
   return (
     <div style={{ ...S.sheet, opacity: open ? 1 : 0, pointerEvents: open ? 'all' : 'none' }}>
       <div style={S.scrim} onClick={onClose} />
-      <div style={{ ...S.body, transform: open ? 'translateY(0)' : 'translateY(100%)' }}>
+      <div style={{ ...S.body, transform: open ? 'translateY(0)' : 'translateY(100%)' }} className="ms-body">
 
         {/* Handle */}
         <div style={S.handle} />
 
         {/* Header: nav + title + close */}
-        <div style={S.header}>
+        <div style={S.header} className="ms-header">
           <button style={S.navBtn} onClick={() => onMonthChange((month + 11) % 12)}>‹</button>
-          <div style={S.title}>{MONTH_NAMES[month]} <span style={S.titleYear}>{year}</span></div>
+          <div style={S.title} className="ms-title">{MONTH_NAMES[month]} <span style={S.titleYear}>{year}</span></div>
           <button style={S.navBtn} onClick={() => onMonthChange((month + 1) % 12)}>›</button>
           <button style={S.close} onClick={onClose}>✕</button>
         </div>
@@ -67,7 +67,7 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick, onM
         <PrecipChart days={days} year={year} month={month} today={today} />
 
         {/* Stat Cards */}
-        <div style={S.statGrid}>
+        <div style={S.statGrid} className="ms-stat-grid">
           <StatCard icon="🌧" value={`${totalMm.toFixed(0)}mm`} label="Total Rain" />
           <StatCard icon="📅" value={`${rainCount}`} label="Rain Days" />
           <StatCard icon="💧" value={wettestDay ? `${wettestDay.day.precip}mm` : '—'} label="Wettest Day" sub={wettestDt ? wettestDt.toLocaleDateString('en-US',{day:'numeric',month:'short'}) : ''} />
@@ -76,7 +76,7 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick, onM
 
         {/* Callout strips */}
         {wettestDay && wettestDay.day.precip > 0 && (
-          <div style={S.calloutRow}>
+          <div style={S.calloutRow} className="ms-callout-row">
             <Callout
               icon={wettestDay.w.icon}
               label="Wettest"
@@ -99,7 +99,7 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick, onM
         )}
 
         {/* Calendar grid */}
-        <div style={S.fullCal}>
+        <div style={S.fullCal} className="ms-full-cal">
           {DAY_NAMES.map(d => <div key={d} style={S.fh}>{d}</div>)}
           {Array.from({ length: firstDay }, (_, i) => <div key={`e${i}`} />)}
           {days.map(({ d, key, day, w }) => {
@@ -111,9 +111,9 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick, onM
                 style={{ ...S.fd, ...fdColor(w.cls), ...(isToday ? S.fdToday : {}) }}
                 onClick={() => { if (day) { onDayClick(key); onClose(); } }}
               >
-                <span style={S.fdIcon}>{w.icon}</span>
-                <span style={S.fdNum}>{d}</span>
-                {precipText && <span style={{ ...S.fdPrecip, color: precipColor(w.cls) }}>{precipText}</span>}
+                <span style={S.fdIcon} className="ms-fd-icon">{w.icon}</span>
+                <span style={S.fdNum} className="ms-fd-num">{d}</span>
+                {precipText && <span style={{ ...S.fdPrecip, color: precipColor(w.cls) }} className="ms-fd-precip">{precipText}</span>}
               </div>
             );
           })}

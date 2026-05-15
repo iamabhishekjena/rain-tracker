@@ -149,16 +149,16 @@ export default function DayOverlay({ dayKey, data, onClose }) {
   return (
     <div style={{ ...S.overlay, opacity: 1, pointerEvents: 'all' }} onClick={onClose}>
       <canvas ref={canvasRef} style={S.canvas} />
-      <div style={S.card} onClick={e => e.stopPropagation()}>
-        <span style={S.icon}>{w.icon}</span>
-        <div style={S.date}>
+      <div style={S.card} className="do-card" onClick={e => e.stopPropagation()}>
+        <span style={S.icon} className="do-icon">{w.icon}</span>
+        <div style={S.date} className="do-date">
           {dt.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
         </div>
         <div style={{ ...S.type, color: w.col }}>
           {w.label}{day.est ? ' · estimate' : ''}
         </div>
 
-        <div style={S.stats}>
+        <div style={S.stats} className="do-stats">
           <Stat v={`${day.precip}mm`}          l="Precip" />
           <Stat v={`${day.prob}%`}              l="Chance" />
           <Stat v={`${Math.round(day.tmax)}°C`} l="High" />
@@ -179,7 +179,7 @@ export default function DayOverlay({ dayKey, data, onClose }) {
           </div>
         )}
 
-        <div style={S.msg}>{msg}</div>
+        <div style={S.msg} className="do-msg">{msg}</div>
         <button style={S.back} onClick={onClose}>← back to calendar</button>
       </div>
     </div>

@@ -6,6 +6,7 @@ import Countdown from './components/Countdown';
 import MonthCard from './components/MonthCard';
 import MonthSheet from './components/MonthSheet';
 import DayOverlay from './components/DayOverlay';
+import './responsive.css';
 
 const YEAR = new Date().getFullYear();
 
@@ -115,17 +116,18 @@ export default function App() {
       <RainCanvas scene={scene} />
 
       <div style={S.app}>
-        <header style={S.header}>
+        <header style={S.header} className="app-header">
           <div>
             <div style={S.brandName}>Rain Tracker</div>
             {location && <div style={S.brandSub}>{location.name}, {location.country} · {YEAR}</div>}
           </div>
 
           {/* Search with suggestions */}
-          <div ref={wrapRef} style={S.searchWrap}>
-            <form onSubmit={handleFormSubmit} style={S.searchForm}>
+          <div ref={wrapRef} style={S.searchWrap} className="search-wrap">
+            <form onSubmit={handleFormSubmit} style={S.searchForm} className="search-form">
               <input
                 style={S.input}
+                className="search-input"
                 type="text"
                 placeholder="Search any city…"
                 value={cityInput}
@@ -133,7 +135,7 @@ export default function App() {
                 onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
                 autoComplete="off"
               />
-              <button style={S.searchBtn} type="submit" disabled={loading}>
+              <button style={S.searchBtn} className="search-btn" type="submit" disabled={loading}>
                 {loading ? loadingMsg || '…' : 'Search'}
               </button>
             </form>
@@ -169,9 +171,9 @@ export default function App() {
         {hasData && (
           <>
             <Countdown targetDate={nextRains[0]?.dt} nextRain={nextRains[0]} followingRain={nextRains[1]} />
-            <div style={S.calWrap}>
+            <div style={S.calWrap} className="cal-wrap">
               <div style={S.yearTag}>{YEAR} — full year rainfall forecast · {location?.name}</div>
-              <div style={S.monthsGrid}>
+              <div style={S.monthsGrid} className="months-grid">
                 {Array.from({ length: 12 }, (_, m) => (
                   <MonthCard key={m} month={m} year={YEAR} data={weatherData} onMonthClick={setOpenMonth} onDayClick={setOpenDay} />
                 ))}
