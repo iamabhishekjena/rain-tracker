@@ -147,14 +147,14 @@ export default function DayOverlay({ dayKey, data, onClose }) {
   const rainHours = day.hours?.filter(h => h.precip > 0 || h.code >= 51) || [];
 
   return (
-    <div style={{ ...S.overlay, opacity: 1, pointerEvents: 'all' }} onClick={onClose}>
+    <div style={{ ...S.overlay, opacity: 1, pointerEvents: 'all' }} className="do-overlay" onClick={onClose}>
       <canvas ref={canvasRef} style={S.canvas} />
       <div style={S.card} className="do-card" onClick={e => e.stopPropagation()}>
         <span style={S.icon} className="do-icon">{w.icon}</span>
         <div style={S.date} className="do-date">
           {dt.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
         </div>
-        <div style={{ ...S.type, color: w.col }}>
+        <div style={{ ...S.type, color: w.col }} className="do-type">
           {w.label}{day.est ? ' · estimate' : ''}
         </div>
 

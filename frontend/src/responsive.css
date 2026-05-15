@@ -53,12 +53,24 @@
   .ms-fd-num    { font-size: .68rem !important; }
   .ms-fd-precip { display: none !important; } /* hide mm label — too tight */
 
-  /* DayOverlay card */
-  .do-card  { padding: 1.4rem 1.1rem !important; border-radius: 18px !important; width: 96% !important; }
-  .do-stats { grid-template-columns: repeat(2,1fr) !important; gap: .45rem !important; }
-  .do-icon  { font-size: 3rem !important; margin-bottom: .2rem !important; }
-  .do-date  { font-size: 1.9rem !important; }
-  .do-msg   { font-size: 1.1rem !important; }
+  /* DayOverlay — make overlay scrollable so tall cards don't clip */
+  .do-overlay {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    padding: 1.2rem 0 2.5rem !important;
+  }
+  .do-card {
+    padding: 1.4rem 1.1rem !important;
+    border-radius: 18px !important;
+    width: 92% !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+  }
+  .do-icon  { font-size: 3rem !important; margin-bottom: .15rem !important; }
+  .do-date  { font-size: 1.6rem !important; line-height: 1.2 !important; margin-bottom: .2rem !important; }
+  .do-type  { font-size: .72rem !important; letter-spacing: .1em !important; margin-bottom: .9rem !important; }
+  .do-stats { grid-template-columns: repeat(2,1fr) !important; gap: .4rem !important; margin-bottom: .9rem !important; }
+  .do-msg   { font-size: 1rem !important; margin-bottom: 1rem !important; }
 }
 
 /* ── Very small phones  ≤ 380px ─────────────────────────── */
@@ -66,4 +78,6 @@
   .months-grid  { grid-template-columns: repeat(2,1fr) !important; gap: .45rem !important; }
   .cd-num       { font-size: 1.35rem !important; }
   .ms-body      { padding: .75rem .7rem 2.5rem !important; }
+  .do-date      { font-size: 1.35rem !important; }
+  .do-card      { padding: 1.1rem .85rem !important; }
 }
