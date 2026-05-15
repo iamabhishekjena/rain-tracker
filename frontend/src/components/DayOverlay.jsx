@@ -20,8 +20,7 @@ export default function DayOverlay({ dayKey, data, onClose }) {
     if (!w) return '';
     const pool = w.cls === 'storm' ? STORM_MSGS : (w.cls === 'rain' || w.cls === 'hrain') ? RAIN_MSGS : SUN_MSGS;
     return pool[Math.floor(Math.random() * pool.length)];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dayKey]);
+  }, [dayKey]); // eslint-disable-line
 
   // canvas animation
   useEffect(() => {
@@ -138,7 +137,7 @@ export default function DayOverlay({ dayKey, data, onClose }) {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener('resize', onResize);
     };
-  }, [dayKey, open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dayKey, open]); // eslint-disable-line
 
   if (!open || !day || !w) return (
     <div style={{ ...S.overlay, opacity: 0, pointerEvents: 'none' }} />

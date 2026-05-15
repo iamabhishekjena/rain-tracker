@@ -7,9 +7,12 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
   },
+  "homepage": "https://iamabhishekjena.github.io/rain-tracker",
   "scripts": {
     "start": "set PORT=3001 && react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "proxy": "http://localhost:8080",
   "browserslist": {
@@ -23,5 +26,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }

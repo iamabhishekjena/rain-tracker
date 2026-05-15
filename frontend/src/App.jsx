@@ -41,7 +41,7 @@ export default function App() {
     } else {
       setScene(todayScene);
     }
-  }, [openDay]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [openDay]); // eslint-disable-line
 
   // Close dropdown when clicking outside
   useEffect(() => {
