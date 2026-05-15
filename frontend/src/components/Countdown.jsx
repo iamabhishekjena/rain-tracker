@@ -58,13 +58,13 @@ function Sep() {
 
 const S = {
   hero: { padding: '0 2.8rem 1rem', flexShrink: 0 },
-  lbl: { fontFamily: "'DM Mono',monospace", fontSize: '.78rem', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(255,255,255,.38)', marginBottom: '.3rem' },
-  date: { fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(1.8rem,4.5vw,3.2rem)', fontStyle: 'italic', fontWeight: 300, color: '#fff', lineHeight: 1, marginBottom: '.7rem', textShadow: '0 3px 28px rgba(0,0,0,.28)' },
+  lbl: { fontFamily: "'Inter',sans-serif", fontSize: '.78rem', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(255,255,255,.38)', marginBottom: '.3rem' },
+  date: { fontFamily: "'Playfair Display',serif", fontSize: 'clamp(1.8rem,4.5vw,3.2rem)', fontStyle: 'italic', fontWeight: 300, color: '#fff', lineHeight: 1, marginBottom: '.7rem', textShadow: '0 3px 28px rgba(0,0,0,.28)' },
   cdRow: { display: 'flex', alignItems: 'flex-end', gap: 0 },
-  num: { fontFamily: "'DM Mono',monospace", fontSize: '2.1rem', fontWeight: 400, color: '#fff', lineHeight: 1, textShadow: '0 2px 12px rgba(0,0,0,.3)' },
-  unitLbl: { fontFamily: "'DM Mono',monospace", fontSize: '.68rem', letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.28)', marginTop: 2 },
+  num: { fontFamily: "'Inter',sans-serif", fontSize: '2.1rem', fontWeight: 500, color: '#fff', lineHeight: 1, textShadow: '0 2px 12px rgba(0,0,0,.3)', fontVariantNumeric: 'tabular-nums' },
+  unitLbl: { fontFamily: "'Inter',sans-serif", fontSize: '.68rem', letterSpacing: '.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,.28)', marginTop: 2 },
   sep: { fontSize: '1.4rem', color: 'rgba(255,255,255,.25)', paddingBottom: '.22rem', margin: '0 1px', animation: 'blink 1s infinite' },
   nn: { display: 'inline-flex', flexDirection: 'column', gap: 2, borderLeft: '.5px solid rgba(255,255,255,.15)', marginLeft: '1.2rem', paddingLeft: '1.2rem', opacity: .22, paddingBottom: '.24rem' },
-  nnLabel: { fontFamily: "'DM Mono',monospace", fontSize: '.68rem', letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.22)' },
-  nnDate: { fontFamily: "'Cormorant Garamond',serif", fontSize: '1.6rem', fontStyle: 'italic', color: '#fff' },
+  nnLabel: { fontFamily: "'Inter',sans-serif", fontSize: '.68rem', letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.22)' },
+  nnDate: { fontFamily: "'Playfair Display',serif", fontSize: '1.6rem', fontStyle: 'italic', color: '#fff' },
 };
