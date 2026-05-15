@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/rain-tracker/static/js/main.36c81b79.js",
+    "main.js": "/rain-tracker/static/js/main.d8c5be6e.js",
     "index.html": "/rain-tracker/index.html",
-    "main.36c81b79.js.map": "/rain-tracker/static/js/main.36c81b79.js.map"
+    "main.d8c5be6e.js.map": "/rain-tracker/static/js/main.d8c5be6e.js.map"
   },
   "entrypoints": [
-    "static/js/main.36c81b79.js"
+    "static/js/main.d8c5be6e.js"
   ]
 }
