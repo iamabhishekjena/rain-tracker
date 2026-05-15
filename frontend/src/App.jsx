@@ -180,7 +180,7 @@ export default function App() {
         )}
       </div>
 
-      <MonthSheet month={openMonth} year={YEAR} data={weatherData} onClose={() => setOpenMonth(null)} onDayClick={key => { setOpenDay(key); setOpenMonth(null); }} />
+      <MonthSheet month={openMonth} year={YEAR} data={weatherData} onClose={() => setOpenMonth(null)} onDayClick={key => { setOpenDay(key); setOpenMonth(null); }} onMonthChange={m => setOpenMonth(m)} />
       <DayOverlay dayKey={openDay} data={weatherData} onClose={() => setOpenDay(null)} />
     </>
   );

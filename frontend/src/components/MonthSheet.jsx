@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { MONTH_NAMES, DAY_NAMES, classifyWeather } from '../utils/weatherUtils';
 
-export default function MonthSheet({ month, year, data, onClose, onDayClick }) {
+export default function MonthSheet({ month, year, data, onClose, onDayClick, onMonthChange }) {
   const open = month !== null;
 
   useEffect(() => {
@@ -20,39 +20,91 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
 
-  let rainCount = 0, totalMm = 0, stormCount = 0;
-  for (let d = 1; d <= daysInMonth; d++) {
+  // Build days array
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const d = i + 1;
     const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const day = data[key];
-    if (!day) continue;
-    const w = classifyWeather(day.code, day.precip);
+    const w = day ? classifyWeather(day.code, day.precip) : { cls: 'cloud', icon: '☁️' };
+    return { d, key, day, w };
+  });
+
+  // Stats
+  let rainCount = 0, totalMm = 0, stormCount = 0;
+  days.forEach(({ day, w }) => {
+    if (!day) return;
     if (w.cls !== 'sun') { rainCount++; totalMm += day.precip; }
     if (w.cls === 'storm') stormCount++;
-  }
+  });
+
+  const daysWithData = days.filter(d => d.day);
+  const wettestDay = daysWithData.reduce((a, b) => (b.day.precip > a.day.precip ? b : a), daysWithData[0]);
+  const hottestDay = daysWithData.reduce((a, b) => (b.day.tmax > a.day.tmax ? b : a), daysWithData[0]);
+  const avgHigh = daysWithData.length
+    ? daysWithData.reduce((s, d) => s + d.day.tmax, 0) / daysWithData.length
+    : 0;
+
+  const wettestDt = wettestDay ? new Date(year, month, wettestDay.d) : null;
+  const hottestDt = hottestDay ? new Date(year, month, hottestDay.d) : null;
 
   return (
     <div style={{ ...S.sheet, opacity: open ? 1 : 0, pointerEvents: open ? 'all' : 'none' }}>
       <div style={S.scrim} onClick={onClose} />
       <div style={{ ...S.body, transform: open ? 'translateY(0)' : 'translateY(100%)' }}>
-        <button style={S.close} onClick={onClose}>✕</button>
-        <div style={S.handle} />
-        <div style={S.title}>{MONTH_NAMES[month]} {year}</div>
 
-        <div style={S.pills}>
-          <Pill value={rainCount} label="rain days" />
-          <Pill value={`${totalMm.toFixed(0)}mm`} label="precipitation" />
-          <Pill value={stormCount} label="storms" />
+        {/* Handle */}
+        <div style={S.handle} />
+
+        {/* Header: nav + title + close */}
+        <div style={S.header}>
+          <button style={S.navBtn} onClick={() => onMonthChange((month + 11) % 12)}>‹</button>
+          <div style={S.title}>{MONTH_NAMES[month]} <span style={S.titleYear}>{year}</span></div>
+          <button style={S.navBtn} onClick={() => onMonthChange((month + 1) % 12)}>›</button>
+          <button style={S.close} onClick={onClose}>✕</button>
         </div>
 
+        {/* Precip + Temp Chart */}
+        <PrecipChart days={days} year={year} month={month} today={today} />
+
+        {/* Stat Cards */}
+        <div style={S.statGrid}>
+          <StatCard icon="🌧" value={`${totalMm.toFixed(0)}mm`} label="Total Rain" />
+          <StatCard icon="📅" value={`${rainCount}`} label="Rain Days" />
+          <StatCard icon="💧" value={wettestDay ? `${wettestDay.day.precip}mm` : '—'} label="Wettest Day" sub={wettestDt ? wettestDt.toLocaleDateString('en-US',{day:'numeric',month:'short'}) : ''} />
+          <StatCard icon="🌡" value={`${avgHigh.toFixed(1)}°C`} label="Avg High" />
+        </div>
+
+        {/* Callout strips */}
+        {wettestDay && wettestDay.day.precip > 0 && (
+          <div style={S.calloutRow}>
+            <Callout
+              icon={wettestDay.w.icon}
+              label="Wettest"
+              date={wettestDt.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})}
+              value={`${wettestDay.day.precip}mm`}
+              color="rgba(106,180,255,.15)"
+              border="rgba(106,180,255,.3)"
+            />
+            {hottestDay && (
+              <Callout
+                icon="☀️"
+                label="Hottest"
+                date={hottestDt.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})}
+                value={`${Math.round(hottestDay.day.tmax)}°C`}
+                color="rgba(255,200,60,.1)"
+                border="rgba(255,200,60,.25)"
+              />
+            )}
+          </div>
+        )}
+
+        {/* Calendar grid */}
         <div style={S.fullCal}>
           {DAY_NAMES.map(d => <div key={d} style={S.fh}>{d}</div>)}
-          {Array.from({ length: firstDay }, (_, i) => <div key={`e${i}`} style={{ opacity: 0 }} />)}
-          {Array.from({ length: daysInMonth }, (_, i) => {
-            const d = i + 1;
-            const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const day = data[key];
-            const w = day ? classifyWeather(day.code, day.precip) : { cls: 'cloud', icon: '☁️' };
+          {Array.from({ length: firstDay }, (_, i) => <div key={`e${i}`} />)}
+          {days.map(({ d, key, day, w }) => {
             const isToday = new Date(year, month, d).getTime() === today.getTime();
+            const precipText = day?.precip > 0 ? `${day.precip}mm` : '';
             return (
               <div
                 key={d}
@@ -61,6 +113,7 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick }) {
               >
                 <span style={S.fdIcon}>{w.icon}</span>
                 <span style={S.fdNum}>{d}</span>
+                {precipText && <span style={{ ...S.fdPrecip, color: precipColor(w.cls) }}>{precipText}</span>}
               </div>
             );
           })}
@@ -70,15 +123,123 @@ export default function MonthSheet({ month, year, data, onClose, onDayClick }) {
   );
 }
 
-function Pill({ value, label }) {
+// ── SVG Chart ──────────────────────────────────────────────────────────────
+function PrecipChart({ days, year, month, today }) {
+  const H = 80, PAD = 2;
+  const maxPrecip = Math.max(...days.map(d => d.day?.precip || 0), 1);
+  const tmaxVals = days.map(d => d.day?.tmax ?? null);
+  const tminVals = days.map(d => d.day?.tmin ?? null);
+  const validTemps = [...tmaxVals, ...tminVals].filter(v => v !== null);
+  const tMin = Math.min(...validTemps, 0);
+  const tMax = Math.max(...validTemps, 1);
+  const n = days.length;
+
+  const barW = (w) => (w - PAD * 2) / n;
+
+  const barFill = (cls) => {
+    const map = { rain: 'rgba(106,180,255,.55)', hrain: 'rgba(106,180,255,.8)', storm: 'rgba(155,124,255,.7)', sun: 'rgba(255,200,60,.25)', cloud: 'rgba(255,255,255,.12)' };
+    return map[cls] || map.cloud;
+  };
+
+  const tempY = (val, chartH) => chartH - PAD - ((val - tMin) / (tMax - tMin)) * (chartH - PAD * 4);
+
   return (
-    <div style={S.pill}>
-      <span style={S.pillVal}>{value}</span>
-      <span style={S.pillLbl}>{label}</span>
+    <div style={S.chartWrap}>
+      <svg width="100%" height={H} style={{ display: 'block', overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="tmaxGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(255,220,100,.9)" />
+            <stop offset="100%" stopColor="rgba(255,180,60,.3)" />
+          </linearGradient>
+        </defs>
+        {/* Use a foreignObject trick — render bars relative to SVG width via viewBox */}
+        {days.map(({ d, day, w }, i) => {
+          const precip = day?.precip || 0;
+          const barH = Math.max(2, (precip / maxPrecip) * (H - PAD * 2));
+          const isToday = new Date(year, month, d).getTime() === today.getTime();
+          // x as percentage string — use a normalized 0-1 scale
+          const xPct = `${(i / n) * 100}%`;
+          const wPct = `${(1 / n) * 100 - 0.3}%`;
+          return (
+            <rect
+              key={d}
+              x={xPct}
+              y={H - PAD - barH}
+              width={wPct}
+              height={barH}
+              rx={2}
+              fill={barFill(w.cls)}
+              style={isToday ? { filter: 'drop-shadow(0 0 4px rgba(106,180,255,.8))' } : {}}
+            />
+          );
+        })}
+
+        {/* tmax polyline */}
+        {tmaxVals.filter(v => v !== null).length > 1 && (
+          <polyline
+            points={days.map(({ }, i) => {
+              if (tmaxVals[i] === null) return null;
+              const x = `${((i + 0.5) / n) * 100}%`;
+              return `${((i + 0.5) / n) * 100},${tempY(tmaxVals[i], H)}`;
+            }).filter(Boolean).join(' ')}
+            fill="none"
+            stroke="rgba(255,210,80,.75)"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        )}
+
+        {/* tmin polyline */}
+        {tminVals.filter(v => v !== null).length > 1 && (
+          <polyline
+            points={days.map(({ }, i) => {
+              if (tminVals[i] === null) return null;
+              return `${((i + 0.5) / n) * 100},${tempY(tminVals[i], H)}`;
+            }).filter(Boolean).join(' ')}
+            fill="none"
+            stroke="rgba(160,210,255,.4)"
+            strokeWidth="1"
+            strokeDasharray="3 2"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+        )}
+      </svg>
+      <div style={S.chartLegend}>
+        <span style={{ color: 'rgba(255,210,80,.75)' }}>— high temp</span>
+        <span style={{ color: 'rgba(160,210,255,.5)' }}>· · low temp</span>
+      </div>
     </div>
   );
 }
 
+// ── Sub-components ──────────────────────────────────────────────────────────
+function StatCard({ icon, value, label, sub }) {
+  return (
+    <div style={S.statCard}>
+      <div style={S.statIcon}>{icon}</div>
+      <div style={S.statValue}>{value}</div>
+      <div style={S.statLabel}>{label}</div>
+      {sub && <div style={S.statSub}>{sub}</div>}
+    </div>
+  );
+}
+
+function Callout({ icon, label, date, value, color, border }) {
+  return (
+    <div style={{ ...S.callout, background: color, borderColor: border }}>
+      <span style={S.calloutIcon}>{icon}</span>
+      <div style={S.calloutBody}>
+        <span style={S.calloutLabel}>{label}</span>
+        <span style={S.calloutDate}>{date}</span>
+      </div>
+      <span style={S.calloutValue}>{value}</span>
+    </div>
+  );
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
 function fdColor(cls) {
   const map = {
     rain:  { background: 'rgba(106,180,255,.14)', border: '.5px solid rgba(106,180,255,.22)' },
@@ -90,21 +251,46 @@ function fdColor(cls) {
   return map[cls] || map.cloud;
 }
 
+function precipColor(cls) {
+  const map = { rain: '#6ab4ff', hrain: '#a4ceff', storm: '#b09aff', sun: 'rgba(255,200,60,.6)', cloud: 'rgba(255,255,255,.3)' };
+  return map[cls] || map.cloud;
+}
+
+// ── Styles ───────────────────────────────────────────────────────────────────
 const S = {
-  sheet: { position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'flex-end', transition: 'opacity .4s' },
-  scrim: { position: 'absolute', inset: 0, background: 'rgba(0,0,0,.52)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' },
-  body: { position: 'relative', zIndex: 1, width: '100%', maxHeight: '87vh', background: 'rgba(10,24,52,.94)', backdropFilter: 'blur(44px)', WebkitBackdropFilter: 'blur(44px)', border: '.5px solid rgba(255,255,255,.11)', borderRadius: '28px 28px 0 0', padding: '1.4rem 2rem 3rem', overflowY: 'auto', transition: 'transform .5s cubic-bezier(.32,.72,0,1)' },
-  close: { position: 'absolute', top: '1.4rem', right: '1.4rem', background: 'rgba(255,255,255,.09)', border: '.5px solid rgba(255,255,255,.14)', borderRadius: '50%', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,.55)', fontSize: '.85rem', cursor: 'pointer' },
-  handle: { width: 34, height: 4, borderRadius: 2, background: 'rgba(255,255,255,.18)', margin: '0 auto 1.4rem' },
-  title: { fontFamily: "'Cormorant Garamond',serif", fontSize: '2.6rem', fontWeight: 300, fontStyle: 'italic', marginBottom: '1.1rem', color: '#fff' },
-  pills: { display: 'flex', gap: '.6rem', marginBottom: '1.4rem', flexWrap: 'wrap' },
-  pill: { background: 'rgba(255,255,255,.07)', border: '.5px solid rgba(255,255,255,.11)', borderRadius: 100, padding: '.35rem .9rem', display: 'flex', gap: '.45rem', alignItems: 'center' },
-  pillVal: { fontFamily: "'DM Mono',monospace", fontSize: '.88rem', color: '#fff' },
-  pillLbl: { fontFamily: "'DM Mono',monospace", fontSize: '.5rem', letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.28)' },
-  fullCal: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 5 },
-  fh: { fontFamily: "'DM Mono',monospace", fontSize: '.52rem', textAlign: 'center', color: 'rgba(255,255,255,.28)', padding: '3px 0', letterSpacing: '.04em' },
-  fd: { aspectRatio: '1', borderRadius: 11, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, cursor: 'pointer', transition: 'all .3s cubic-bezier(.34,1.4,.64,1)' },
-  fdToday: { boxShadow: '0 0 0 2px rgba(106,180,255,.7)' },
-  fdIcon: { fontSize: '.95rem', lineHeight: 1 },
-  fdNum: { fontFamily: "'DM Mono',monospace", fontSize: '.56rem', color: 'rgba(255,255,255,.55)' },
+  sheet:        { position:'fixed', inset:0, zIndex:100, display:'flex', alignItems:'flex-end', transition:'opacity .4s' },
+  scrim:        { position:'absolute', inset:0, background:'rgba(0,0,0,.52)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)' },
+  body:         { position:'relative', zIndex:1, width:'100%', maxHeight:'90vh', background:'rgba(10,24,52,.96)', backdropFilter:'blur(44px)', WebkitBackdropFilter:'blur(44px)', border:'.5px solid rgba(255,255,255,.11)', borderRadius:'28px 28px 0 0', padding:'1.2rem 1.8rem 3rem', overflowY:'auto', transition:'transform .5s cubic-bezier(.32,.72,0,1)' },
+  handle:       { width:34, height:4, borderRadius:2, background:'rgba(255,255,255,.18)', margin:'0 auto 1.2rem' },
+  header:       { display:'flex', alignItems:'center', gap:'.75rem', marginBottom:'1.2rem', paddingRight:'2.5rem' },
+  title:        { fontFamily:"'Cormorant Garamond',serif", fontSize:'2rem', fontWeight:300, fontStyle:'italic', color:'#fff', flex:1, textAlign:'center' },
+  titleYear:    { opacity:.45, fontSize:'1.4rem' },
+  navBtn:       { background:'rgba(255,255,255,.07)', border:'.5px solid rgba(255,255,255,.14)', borderRadius:'50%', width:34, height:34, display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,.7)', fontSize:'1.1rem', cursor:'pointer', flexShrink:0, transition:'background .2s' },
+  close:        { position:'absolute', top:'1.2rem', right:'1.2rem', background:'rgba(255,255,255,.09)', border:'.5px solid rgba(255,255,255,.14)', borderRadius:'50%', width:30, height:30, display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,.55)', fontSize:'.85rem', cursor:'pointer' },
+
+  chartWrap:    { marginBottom:'1.2rem', padding:'.5rem .2rem .2rem' },
+  chartLegend:  { display:'flex', gap:'1.2rem', justifyContent:'flex-end', marginTop:'.35rem', fontFamily:"'DM Mono',monospace", fontSize:'.48rem', letterSpacing:'.08em' },
+
+  statGrid:     { display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'.6rem', marginBottom:'1rem' },
+  statCard:     { background:'rgba(255,255,255,.06)', border:'.5px solid rgba(255,255,255,.1)', borderRadius:14, padding:'.75rem .6rem', display:'flex', flexDirection:'column', alignItems:'center', gap:2, textAlign:'center' },
+  statIcon:     { fontSize:'1.1rem', marginBottom:2 },
+  statValue:    { fontFamily:"'DM Mono',monospace", fontSize:'.95rem', fontWeight:400, color:'#fff', lineHeight:1 },
+  statLabel:    { fontFamily:"'DM Mono',monospace", fontSize:'.42rem', letterSpacing:'.12em', textTransform:'uppercase', color:'rgba(255,255,255,.3)', marginTop:2 },
+  statSub:      { fontFamily:"'DM Mono',monospace", fontSize:'.44rem', color:'rgba(255,255,255,.4)', marginTop:1 },
+
+  calloutRow:   { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'.6rem', marginBottom:'1.1rem' },
+  callout:      { display:'flex', alignItems:'center', gap:'.6rem', borderRadius:12, border:'.5px solid', padding:'.6rem .8rem' },
+  calloutIcon:  { fontSize:'1.2rem', flexShrink:0 },
+  calloutBody:  { display:'flex', flexDirection:'column', gap:2, flex:1, minWidth:0 },
+  calloutLabel: { fontFamily:"'DM Mono',monospace", fontSize:'.44rem', letterSpacing:'.14em', textTransform:'uppercase', color:'rgba(255,255,255,.35)' },
+  calloutDate:  { fontFamily:"'Outfit',sans-serif", fontSize:'.72rem', color:'rgba(255,255,255,.8)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' },
+  calloutValue: { fontFamily:"'DM Mono',monospace", fontSize:'.9rem', color:'#fff', flexShrink:0 },
+
+  fullCal:      { display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:4 },
+  fh:           { fontFamily:"'DM Mono',monospace", fontSize:'.5rem', textAlign:'center', color:'rgba(255,255,255,.28)', padding:'3px 0', letterSpacing:'.04em' },
+  fd:           { aspectRatio:'1', borderRadius:10, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:0, cursor:'pointer', transition:'all .3s cubic-bezier(.34,1.4,.64,1)', paddingBottom:2 },
+  fdToday:      { boxShadow:'0 0 0 2px rgba(106,180,255,.7)' },
+  fdIcon:       { fontSize:'.85rem', lineHeight:1 },
+  fdNum:        { fontFamily:"'DM Mono',monospace", fontSize:'.5rem', color:'rgba(255,255,255,.55)', lineHeight:1 },
+  fdPrecip:     { fontFamily:"'DM Mono',monospace", fontSize:'.38rem', lineHeight:1, marginTop:1 },
 };
