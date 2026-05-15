@@ -101,7 +101,7 @@ export default function App() {
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@200;300;400&display=swap" rel="stylesheet" />
       <style>{`
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html{font-size:18px}
+        html{font-size:20px}
         html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
         @keyframes blink{0%,100%{opacity:.25}50%{opacity:.06}}
         @keyframes gin{from{transform:scale(.78) translateY(44px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
@@ -190,21 +190,21 @@ export default function App() {
 const S = {
   app:        { position:'relative', zIndex:10, height:'100vh', display:'flex', flexDirection:'column', overflow:'hidden', fontFamily:"'Outfit',system-ui,sans-serif", color:'#fff' },
   header:     { padding:'2.8rem 2.8rem 1.4rem', display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexShrink:0 },
-  brandName:  { fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(1.7rem,3.5vw,2.4rem)', fontWeight:300, fontStyle:'italic', color:'#fff', lineHeight:1, textShadow:'0 2px 24px rgba(0,0,0,.35)' },
-  brandSub:   { fontFamily:"'DM Mono',monospace", fontSize:'.65rem', letterSpacing:'.28em', textTransform:'uppercase', color:'rgba(255,255,255,.28)', marginTop:'.18rem' },
+  brandName:  { fontFamily:"'Cormorant Garamond',serif", fontSize:'clamp(2.4rem,5vw,3.6rem)', fontWeight:300, fontStyle:'italic', color:'#fff', lineHeight:1, textShadow:'0 2px 24px rgba(0,0,0,.35)' },
+  brandSub:   { fontFamily:"'DM Mono',monospace", fontSize:'.78rem', letterSpacing:'.28em', textTransform:'uppercase', color:'rgba(255,255,255,.28)', marginTop:'.22rem' },
   searchWrap: { position:'relative', display:'flex', flexDirection:'column', alignItems:'flex-end' },
   searchForm: { display:'flex', gap:'.5rem', alignItems:'center' },
-  input:      { background:'rgba(255,255,255,.09)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', border:'.5px solid rgba(255,255,255,.18)', borderRadius:100, color:'#fff', fontFamily:"'DM Mono',monospace", fontSize:'.78rem', letterSpacing:'.08em', padding:'.48rem 1.2rem', outline:'none', width:220 },
-  searchBtn:  { background:'rgba(106,180,255,.2)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', border:'.5px solid rgba(106,180,255,.35)', borderRadius:100, color:'#fff', fontFamily:"'DM Mono',monospace", fontSize:'.78rem', letterSpacing:'.08em', padding:'.48rem 1.2rem', cursor:'pointer' },
+  input:      { background:'rgba(255,255,255,.09)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', border:'.5px solid rgba(255,255,255,.18)', borderRadius:100, color:'#fff', fontFamily:"'DM Mono',monospace", fontSize:'.9rem', letterSpacing:'.08em', padding:'.52rem 1.3rem', outline:'none', width:240 },
+  searchBtn:  { background:'rgba(106,180,255,.2)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', border:'.5px solid rgba(106,180,255,.35)', borderRadius:100, color:'#fff', fontFamily:"'DM Mono',monospace", fontSize:'.9rem', letterSpacing:'.08em', padding:'.52rem 1.3rem', cursor:'pointer' },
   dropdown:   { position:'absolute', top:'calc(100% + 8px)', right:0, width:320, background:'rgba(8,20,48,.96)', backdropFilter:'blur(28px)', WebkitBackdropFilter:'blur(28px)', border:'.5px solid rgba(255,255,255,.14)', borderRadius:16, overflow:'hidden', zIndex:500, animation:'ddIn .2s ease' },
   sugItem:    { display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:'1rem', padding:'.65rem 1.1rem', cursor:'pointer', transition:'background .15s', background:'transparent' },
-  sugName:    { fontFamily:"'Outfit',sans-serif", fontSize:'.95rem', color:'#fff', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' },
-  sugMeta:    { fontFamily:"'DM Mono',monospace", fontSize:'.65rem', color:'rgba(255,255,255,.38)', whiteSpace:'nowrap', flexShrink:0 },
-  error:      { fontFamily:"'DM Mono',monospace", fontSize:'.75rem', color:'#f87171', textAlign:'center', padding:'.5rem 2.8rem' },
+  sugName:    { fontFamily:"'Outfit',sans-serif", fontSize:'1.1rem', color:'#fff', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' },
+  sugMeta:    { fontFamily:"'DM Mono',monospace", fontSize:'.75rem', color:'rgba(255,255,255,.38)', whiteSpace:'nowrap', flexShrink:0 },
+  error:      { fontFamily:"'DM Mono',monospace", fontSize:'.85rem', color:'#f87171', textAlign:'center', padding:'.5rem 2.8rem' },
   empty:      { flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'2rem' },
   emptyTitle: { fontFamily:"'Cormorant Garamond',serif", fontSize:'1.8rem', fontStyle:'italic', fontWeight:300, color:'rgba(255,255,255,.75)', marginBottom:'.5rem' },
-  emptySub:   { fontFamily:"'DM Mono',monospace", fontSize:'.7rem', letterSpacing:'.15em', textTransform:'uppercase', color:'rgba(255,255,255,.25)' },
+  emptySub:   { fontFamily:"'DM Mono',monospace", fontSize:'.82rem', letterSpacing:'.15em', textTransform:'uppercase', color:'rgba(255,255,255,.25)' },
   calWrap:    { flex:1, overflowY:'auto', padding:'.8rem 2.8rem 2.5rem', scrollbarWidth:'none' },
-  yearTag:    { fontFamily:"'DM Mono',monospace", fontSize:'.62rem', letterSpacing:'.28em', textTransform:'uppercase', color:'rgba(255,255,255,.2)', marginBottom:'.9rem' },
+  yearTag:    { fontFamily:"'DM Mono',monospace", fontSize:'.72rem', letterSpacing:'.28em', textTransform:'uppercase', color:'rgba(255,255,255,.2)', marginBottom:'.9rem' },
   monthsGrid: { display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'.9rem' },
 };
