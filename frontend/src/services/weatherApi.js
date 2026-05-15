@@ -11,6 +11,23 @@ export async function geocodeCity(city) {
   return { lat, lon, name, country, timezone: timezone || 'auto' };
 }
 
+export async function searchCitySuggestions(query) {
+  if (!query || query.trim().length < 2) return [];
+  const res = await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query.trim())}&count=8&language=en&format=json`
+  );
+  const data = await res.json();
+  return (data.results || []).map(r => ({
+    lat: r.latitude,
+    lon: r.longitude,
+    name: r.name,
+    country: r.country,
+    admin1: r.admin1 || '',
+    timezone: r.timezone || 'auto',
+    display: [r.name, r.admin1, r.country].filter(Boolean).join(', '),
+  }));
+}
+
 export async function fetchYearForecast(lat, lon, timezone) {
   const tz = encodeURIComponent(timezone);
   const today = new Date();
