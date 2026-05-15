@@ -19,6 +19,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [openMonth, setOpenMonth] = useState(null);
   const [openDay, setOpenDay] = useState(null);
+  const [todayScene, setTodayScene] = useState('rain');
 
   const nextRains = findNextRainEvents(weatherData, 2);
 
@@ -26,8 +27,17 @@ export default function App() {
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
     const day = weatherData[today];
-    if (day) setScene(classifyWeather(day.code, day.precip).scene);
+    if (day) { const s = classifyWeather(day.code, day.precip).scene; setScene(s); setTodayScene(s); }
   }, [weatherData]);
+
+  // When a day overlay opens, shift the background scene to match that day
+  useEffect(() => {
+    if (openDay && weatherData[openDay]) {
+      setScene(classifyWeather(weatherData[openDay].code, weatherData[openDay].precip).scene);
+    } else {
+      setScene(todayScene);
+    }
+  }, [openDay]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSearch(e) {
     e.preventDefault();
